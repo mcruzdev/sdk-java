@@ -65,6 +65,7 @@
         <version.enforcer.plugin>3.6.2</version.enforcer.plugin>
         <version.failsafe.plugin>3.5.4</version.failsafe.plugin>
         <version.gpg.plugin>3.2.8</version.gpg.plugin>
+        <version.io.grpc.java>1.78.0</version.io.grpc.java>
         <version.jar.plugin>3.5.0</version.jar.plugin>
         <version.jdk>${java.version}</version.jdk>
         <version.jsonschema2pojo-maven-plugin>1.2.2</version.jsonschema2pojo-maven-plugin>
@@ -202,6 +203,27 @@
                 <groupId>jakarta.validation</groupId>
                 <artifactId>jakarta.validation-api</artifactId>
                 <version>${version.jakarta.validation}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-netty</artifactId>
+                <version>${version.io.grpc.java}</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-protobuf</artifactId>
+                <version>${version.io.grpc.java}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-stub</artifactId>
+                <version>${version.io.grpc.java}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>${version.io.grpc.java}</artifactId>
+                <version>1.78.0</version>
             </dependency>
 
             <!-- test -->

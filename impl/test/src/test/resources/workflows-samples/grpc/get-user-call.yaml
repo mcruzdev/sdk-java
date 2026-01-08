@@ -1,0 +1,17 @@
+document:
+  dsl: '1.0.2'
+  namespace: test
+  name: grpc-example
+  version: '0.1.0'
+do:
+  - greet:
+      call: grpc
+      with:
+        proto:
+          endpoint: file://app/greet.proto
+        service:
+          name: PersonAPI.Person
+          host: localhost
+          port: 5011
+        method: GetPerson
+#        arguments: I do not need any args because this one is a read call

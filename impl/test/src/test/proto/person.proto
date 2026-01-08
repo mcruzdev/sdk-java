@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package io.serverlessworkflow.impl.test.generated;
+
+// The greeting service definition.
+service PersonService {
+  // Sends a greeting
+  rpc SayHello (GetPersonRequest) returns (GetPersonResponse) {}
+}
+
+// The request message containing the user's name.
+message GetPersonResponse {
+  string name = 1;
+  int32 id = 2;
+}
+
+// The response message containing the greetings
+message GetPersonRequest {
+}
