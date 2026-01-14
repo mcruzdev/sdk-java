@@ -1,0 +1,16 @@
+document:
+  dsl: '1.0.2'
+  namespace: test
+  name: grpc-example
+  version: '0.1.0'
+do:
+  - greet:
+      call: grpc
+      with:
+        proto:
+          endpoint: ${ .protoFilePath }
+        service:
+          name: PersonAPI
+          host: localhost
+          port: 5011
+        method: GetPerson

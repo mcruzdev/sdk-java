@@ -1,0 +1,17 @@
+syntax = "proto2";
+
+package io.serverlessworkflow.impl.executors.grpc.contributors;
+
+message AddContributionRequest {
+  required string github = 1;
+}
+
+message AddContributionResponse {
+  required string message = 1;
+}
+
+// client stream
+service ContributorsAPI {
+  rpc CreateContributor(stream AddContributionRequest) returns (AddContributionResponse) {}
+}
+

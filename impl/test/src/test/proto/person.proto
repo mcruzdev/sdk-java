@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+package person;
+
+message GetPersonRequest {}
+
+message GetPersonResponse {
+  required string name = 1;
+  required int32 id = 2;
+}
+
+service PersonAPI {
+  rpc GetPerson(GetPersonRequest) returns (GetPersonResponse);
+}
