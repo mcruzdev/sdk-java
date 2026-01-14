@@ -79,7 +79,6 @@ public class FileDescriptorReader {
   private static void generateFileDescriptor(Path grpcDir, Path protoFile, Path descriptorOutput) {
     String[] protocArgs =
         new String[] {
-          "protoc",
           "--include_imports",
           "--descriptor_set_out=" + descriptorOutput.toAbsolutePath(),
           "-I",
