@@ -246,9 +246,7 @@ public abstract class AbstractTaskExecutor<T extends TaskBase> implements TaskEx
                         p -> t.output(p.apply(workflowContext, t, t.rawOutput())));
                     outputSchemaValidator.ifPresent(s -> s.validate(t.output()));
                     contextProcessor.ifPresent(
-                        p ->
-                            workflowContext.context(
-                                p.apply(workflowContext, t, workflowContext.context())));
+                        p -> workflowContext.context(p.apply(workflowContext, t, t.output())));
                     contextSchemaValidator.ifPresent(s -> s.validate(workflowContext.context()));
                     t.completedAt(Instant.now());
                     publishEvent(
