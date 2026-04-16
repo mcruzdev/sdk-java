@@ -1,0 +1,2 @@
+{"id":"ea8208d5-6a76-44c8-bec4-611284dc0b66","ts":"2026-04-16T17:50:04.010Z","path":"/Users/matheuscruz/workspace/sdk-java/fluent/spec/src/main/java/io/serverlessworkflow/fluent/spec/spi/CallHttpTaskFluent.java","version":"1.0.0","taskID":"77528cb8-7879-4887-8411-79972d89c70f"}
+{"id":"d0a319ff-dbb9-4b11-94af-2bc62cdb92d8","ts":"2026-04-16T17:50:09.837Z","path":"/Users/matheuscruz/workspace/sdk-java/fluent/spec/src/test/java/io/serverlessworkflow/fluent/spec/dsl/CallHttpAuthDslTest.java","version":"1.0.0","taskID":"77528cb8-7879-4887-8411-79972d89c70f"}
