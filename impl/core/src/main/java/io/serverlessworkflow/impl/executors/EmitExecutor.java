@@ -24,6 +24,7 @@ import io.serverlessworkflow.api.types.EventDataschema;
 import io.serverlessworkflow.api.types.EventProperties;
 import io.serverlessworkflow.api.types.EventSource;
 import io.serverlessworkflow.api.types.EventTime;
+import io.serverlessworkflow.impl.ContextSnapshot;
 import io.serverlessworkflow.impl.TaskContext;
 import io.serverlessworkflow.impl.WorkflowApplication;
 import io.serverlessworkflow.impl.WorkflowContext;
@@ -78,14 +79,16 @@ public class EmitExecutor extends RegularTaskExecutor<EmitTask> {
   @Override
   protected CompletableFuture<WorkflowModel> internalExecute(
       WorkflowContext workflow, TaskContext taskContext) {
+    ContextSnapshot contextSnapshot = workflow.instance().contextSnapshot();
     Collection<EventPublisher> eventPublishers =
         workflow.definition().application().eventPublishers();
     CloudEvent ce = buildCloudEvent(workflow, taskContext);
-    return CompletableFuture.allOf(
-            eventPublishers.stream()
-                .map(eventPublisher -> eventPublisher.publish(ce))
-                .toArray(size -> new CompletableFuture[size]))
-        .thenApply(v -> taskContext.input());
+    return contextSnapshot.wrap(
+        CompletableFuture.allOf(
+                eventPublishers.stream()
+                    .map(eventPublisher -> eventPublisher.publish(ce))
+                    .toArray(size -> new CompletableFuture[size]))
+            .thenApply(v -> taskContext.input()));
   }
 
   private CloudEvent buildCloudEvent(WorkflowContext workflow, TaskContext taskContext) {

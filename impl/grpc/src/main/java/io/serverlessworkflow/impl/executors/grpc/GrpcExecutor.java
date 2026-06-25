@@ -27,6 +27,7 @@ import io.grpc.MethodDescriptor;
 import io.grpc.protobuf.ProtoUtils;
 import io.grpc.stub.ClientCalls;
 import io.grpc.stub.StreamObserver;
+import io.serverlessworkflow.impl.ContextSnapshot;
 import io.serverlessworkflow.impl.TaskContext;
 import io.serverlessworkflow.impl.WorkflowContext;
 import io.serverlessworkflow.impl.WorkflowError;
@@ -56,8 +57,12 @@ public class GrpcExecutor implements CallableTask {
   @Override
   public CompletableFuture<WorkflowModel> apply(
       WorkflowContext workflowContext, TaskContext taskContext, WorkflowModel input) {
-    return buildGrpcCallExecutor(
-        workflowContext, taskContext, this.arguments.apply(workflowContext, taskContext, input));
+    ContextSnapshot contextSnapshot = workflowContext.instance().contextSnapshot();
+    return contextSnapshot.wrap(
+        buildGrpcCallExecutor(
+            workflowContext,
+            taskContext,
+            this.arguments.apply(workflowContext, taskContext, input)));
   }
 
   private CompletableFuture<WorkflowModel> buildGrpcCallExecutor(

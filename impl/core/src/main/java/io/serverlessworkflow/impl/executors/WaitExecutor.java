@@ -16,6 +16,7 @@
 package io.serverlessworkflow.impl.executors;
 
 import io.serverlessworkflow.api.types.WaitTask;
+import io.serverlessworkflow.impl.ContextSnapshot;
 import io.serverlessworkflow.impl.TaskContext;
 import io.serverlessworkflow.impl.WorkflowContext;
 import io.serverlessworkflow.impl.WorkflowDefinition;
@@ -55,13 +56,14 @@ public class WaitExecutor extends RegularTaskExecutor<WaitTask> {
   @Override
   protected CompletableFuture<WorkflowModel> internalExecute(
       WorkflowContext workflow, TaskContext taskContext) {
+    ContextSnapshot contextSnapshot = workflow.instance().contextSnapshot();
     workflow.instance().status(WorkflowStatus.WAITING);
     CompletableFuture<WorkflowModel> future = new CompletableFuture<>();
     CompletableFuture.delayedExecutor(
             durationResolver.apply(workflow, taskContext, taskContext.input()).toMillis(),
             TimeUnit.MILLISECONDS,
             workflow.definition().application().executorService())
-        .execute(() -> future.complete(taskContext.output()));
+        .execute(contextSnapshot.wrap((Runnable) () -> future.complete(taskContext.output())));
     return future;
   }
 }

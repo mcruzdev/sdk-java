@@ -21,6 +21,7 @@ import io.serverlessworkflow.api.types.ListenTaskConfiguration;
 import io.serverlessworkflow.api.types.ListenTaskConfiguration.ListenAndReadAs;
 import io.serverlessworkflow.api.types.SubscriptionIterator;
 import io.serverlessworkflow.api.types.Until;
+import io.serverlessworkflow.impl.ContextSnapshot;
 import io.serverlessworkflow.impl.TaskContext;
 import io.serverlessworkflow.impl.WorkflowContext;
 import io.serverlessworkflow.impl.WorkflowDefinition;
@@ -163,6 +164,7 @@ public abstract class ListenExecutor extends RegularTaskExecutor<ListenTask> {
   @Override
   protected CompletableFuture<WorkflowModel> internalExecute(
       WorkflowContext workflow, TaskContext taskContext) {
+    ContextSnapshot contextSnapshot = workflow.instance().contextSnapshot();
     WorkflowModelCollection output =
         workflow.definition().application().modelFactory().createCollection();
     ((WorkflowMutableInstance) workflow.instance()).status(WorkflowStatus.WAITING);
@@ -174,9 +176,10 @@ public abstract class ListenExecutor extends RegularTaskExecutor<ListenTask> {
             workflow,
             taskContext);
     workflow.instance().addCancelable(info.completableFuture());
-    return info.completableFuture()
-        .whenComplete((__, e) -> info.registrations().forEach(eventConsumer::unregister))
-        .thenApply(__ -> output);
+    return contextSnapshot.wrap(
+        info.completableFuture()
+            .whenComplete((__, e) -> info.registrations().forEach(eventConsumer::unregister))
+            .thenApply(__ -> output));
   }
 
   protected <T> EventRegistrationInfo buildInfo(
