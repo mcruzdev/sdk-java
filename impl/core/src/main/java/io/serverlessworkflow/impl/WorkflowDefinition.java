@@ -196,6 +196,10 @@ public class WorkflowDefinition implements AutoCloseable, WorkflowDefinitionData
     return Optional.ofNullable(activeInstances.get(instanceId));
   }
 
+  public Collection<WorkflowInstance> activeInstances() {
+    return Collections.unmodifiableCollection(activeInstances.values());
+  }
+
   @Override
   public WorkflowDefinitionId id() {
     return definitionId;
