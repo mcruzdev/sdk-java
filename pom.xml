@@ -167,6 +167,7 @@
       <dependency>
         <groupId>net.sourceforge.plantuml</groupId>
         <artifactId>plantuml</artifactId>
+        <optional>true</optional>
         <version>${version.plantuml}</version>
       </dependency>
       <dependency>
