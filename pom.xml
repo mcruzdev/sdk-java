@@ -40,7 +40,6 @@
     <module>api</module>
     <module>spi</module>
     <module>validation</module>
-    <module>diagram</module>
     <module>utils</module>
   </modules>
 
@@ -75,7 +74,6 @@
     <version.com.fasterxml.jackson>2.22.2</version.com.fasterxml.jackson>
     <version.com.networknt>1.5.9</version.com.networknt>
     <version.commons.lang>3.20.0</version.commons.lang>
-    <version.graphviz>0.18.1</version.graphviz>
     <version.hamcrest>3.0</version.hamcrest>
     <version.jakarta.validation>3.1.1</version.jakarta.validation>
     <version.jsonassert>1.5.3</version.jsonassert>
@@ -83,8 +81,6 @@
     <version.org.junit.jupiter>6.1.3</version.org.junit.jupiter>
     <version.org.mockito>5.23.0</version.org.mockito>
     <version.org.slf4j>2.0.19</version.org.slf4j>
-    <version.plantuml>1.2026.6</version.plantuml>
-    <version.thymeleaf>3.1.5.RELEASE</version.thymeleaf>
 
 
     <!-- Checkstyle props -->
@@ -158,21 +154,6 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>${version.commons.lang}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.thymeleaf</groupId>
-        <artifactId>thymeleaf</artifactId>
-        <version>${version.thymeleaf}</version>
-      </dependency>
-      <dependency>
-        <groupId>net.sourceforge.plantuml</groupId>
-        <artifactId>plantuml-asl</artifactId>
-        <version>${version.plantuml}</version>
-      </dependency>
-      <dependency>
-        <groupId>guru.nidi</groupId>
-        <artifactId>graphviz-java</artifactId>
-        <version>${version.graphviz}</version>
       </dependency>
 
       <!-- test -->
