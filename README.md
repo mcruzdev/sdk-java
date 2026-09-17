@@ -10,11 +10,14 @@ With the SDK you can:
 * Parse workflow JSON and YAML definitions
 * Programmatically build workflow definitions
 * Validate workflow definitions (both schema and workflow integrity validation)
-* Generate workflow diagram (SVG)
 * Set of utilities to help runtimes interpret the Serverless Workflow object model
 
 Serverless Workflow Java SDK is **not** a workflow runtime implementation but can be used by Java runtime implementations
-to parse and validate workflow definitions as well as generate the workflow diagram (SVG).
+to parse and validate workflow definitions.
+
+> **Note:** The `serverlessworkflow-diagram` module (workflow-to-SVG diagram generation) and the `diagram-rest` addon
+> have been removed. They depended on [PlantUML](https://plantuml.com/), which is GPL-3.0-licensed and incompatible
+> with distributing this project's Apache-2.0-licensed artifacts.
 
 ### Status
 
@@ -92,12 +95,6 @@ b) Add the following dependencies to your pom.xml `dependencies` section:
 
 <dependency>
     <groupId>io.serverlessworkflow</groupId>
-    <artifactId>serverlessworkflow-diagram</artifactId>
-    <version>5.1.0.Final</version>
-</dependency>
-
-<dependency>
-    <groupId>io.serverlessworkflow</groupId>
     <artifactId>serverlessworkflow-util</artifactId>
     <version>5.1.0.Final</version>
 </dependency>
@@ -117,7 +114,6 @@ b) Add the following dependencies to your build.gradle `dependencies` section:
 implementation("io.serverlessworkflow:serverlessworkflow-api:5.1.0.Final")
 implementation("io.serverlessworkflow:serverlessworkflow-spi:5.1.0.Final")
 implementation("io.serverlessworkflow:serverlessworkflow-validation:5.1.0.Final")
-implementation("io.serverlessworkflow:serverlessworkflow-diagram:5.1.0.Final")
 implementation("io.serverlessworkflow:serverlessworkflow-util:5.1.0.Final")
 ```
 
@@ -258,67 +254,6 @@ WorkflowValidator workflowValidator = new WorkflowValidatorImpl();
 List<ValidationError> validationErrors = workflowValidator.setWorkflow(workflow).validate();
 ```
 
-#### Building Workflow Diagram
-
-Given a valid workflow definition (JSON/YAML) or a Workflow object you can build the workflow diagram SVG.
-The generated diagram SVG uses [PlantUML](https://plantuml.com/) state diagram visualization and can be embedded inside your 
-tooling or web pages, or any SVG viewer.
-
-You can build the workflow diagram SVG with the following code:
-
-``` java
-Workflow workflow = Workflow.fromSource(source);
-
-WorkflowDiagram workflowDiagram = new WorkflowDiagramImpl();
-workflowDiagram.setWorkflow(workflow);
-
-String diagramSVG = workflowDiagram.getSvgDiagram();
-```
-
-`diagramSVG` includes the diagram SVG source which you can then decide to save to a file, 
-print, or process further.
-
-In case default visualization of the workflow is not sufficient you can provide custom workflow template to be 
-used while generating the SVG file. Easiest is to start off from the default template and customize it to your needs.
-
-Custom template must be on the classpath in `templates/plantuml` directory and must use `.txt` extension. Next
-template is set on `WorkflowDiagram` instance as shown below.
-
-``` java
-Workflow workflow = Workflow.fromSource(source);
-
-WorkflowDiagram workflowDiagram = new WorkflowDiagramImpl();
-workflowDiagram.setWorkflow(workflow);
-workflowDiagram.setTemplate("custom-template");
-
-String diagramSVG = workflowDiagram.getSvgDiagram();
-```
-
-By default the diagram legend is now shown. If you want to enable it you can do:
-
-``` java
-Workflow workflow = Workflow.fromSource(source);
-
-WorkflowDiagram workflowDiagram = new WorkflowDiagramImpl();
-workflowDiagram.setWorkflow(workflow)
-               .showLegend(true);
-
-String diagramSVG = workflowDiagram.getSvgDiagram();
-```
-
-Here are some generated diagrams from the specification examples (with legend enabled):
-
-1. [Job Monitoring Example](https://github.com/serverlessworkflow/specification/blob/master/examples/examples.md#Monitor-Job-Example)
-<p align="center">
-<img src="img/jobmonitoring.png" alt="Job Monitoring Example Diagram"/>
-</p>
-
-
-2. [Send CloudEvent on Workflow completion Example](https://github.com/serverlessworkflow/specification/blob/master/examples/examples.md#send-cloudevent-on-workfow-completion-example)
-<p align="center">
-<img src="img/provisionorders.png" alt="Send Cloud Event on Workflow completion"/>
-</p>
-
 #### Using Workflow Utils
 Workflow utils provide a number of useful methods for extracting information from workflow definitions.
 Once you have a `Workflow` instance, you can use it
@@ -355,28 +290,6 @@ FunctionDefinition finalizeApplicationFunctionDefinition =
 ```Java
  List<Action> actionsForFunctionDefinition =
         WorkflowUtils.getActionsForFunctionDefinition(workflow, functionRefName);
-```
-
-#### Extra
-
-SDK includes extra functionalities which are not part of core modules but 
-are very useful and can be used as addons to the core:
-
-##### Diagram REST
-This is a Spring Boot app which builds a rest api for diagram generation. 
-It was contributed by our community member David Marques.
-
-To start using it:
-
-```
-cd diagram-rest
-mvn clean install spring-boot:run
-```
-
-Then you can get the diagram SVG for a workflow definition for example:
-
-```
-curl -X POST localhost:8090/diagram -d '{"id":"booklending","name":"Book Lending Workflow","version":"1.0","specVersion":"0.8","start":"Book Lending Request","states":[{"name":"Book Lending Request","type":"event","onEvents":[{"eventRefs":["Book Lending Request Event"]}],"transition":"Get Book Status"},{"name":"Get Book Status","type":"operation","actions":[{"functionRef":{"refName":"Get status for book","arguments":{"bookid":"${ .book.id }"}}}],"transition":"Book Status Decision"},{"name":"Book Status Decision","type":"switch","dataConditions":[{"name":"Book is on loan","condition":"${ .book.status == \"onloan\" }","transition":"Report Status To Lender"},{"name":"Check is available","condition":"${ .book.status == \"available\" }","transition":"Check Out Book"}]},{"name":"Report Status To Lender","type":"operation","actions":[{"functionRef":{"refName":"Send status to lender","arguments":{"bookid":"${ .book.id }","message":"Book ${ .book.title } is already on loan"}}}],"transition":"Wait for Lender response"},{"name":"Wait for Lender response","type":"switch","eventConditions":[{"name":"Hold Book","eventRef":"Hold Book Event","transition":"Request Hold"},{"name":"Decline Book Hold","eventRef":"Decline Hold Event","transition":"Cancel Request"}]},{"name":"Request Hold","type":"operation","actions":[{"functionRef":{"refName":"Request hold for lender","arguments":{"bookid":"${ .book.id }","lender":"${ .lender }"}}}],"transition":"Wait two weeks"},{"name":"Wait two weeks","type":"sleep","duration":"P2W","transition":"Get Book Status"},{"name":"Check Out Book","type":"operation","actions":[{"functionRef":{"refName":"Check out book with id","arguments":{"bookid":"${ .book.id }"}}},{"functionRef":{"refName":"Notify Lender for checkout","arguments":{"bookid":"${ .book.id }","lender":"${ .lender }"}}}],"end":true}],"functions":[],"events":[]}'
 ```
 
 
