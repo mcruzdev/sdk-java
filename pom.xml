@@ -72,7 +72,6 @@
 
 
     <!-- Dependencies versions, please keep in alphabetical order -->
-    <version.ch.qos.logback>1.6.3</version.ch.qos.logback>
     <version.com.fasterxml.jackson>2.22.2</version.com.fasterxml.jackson>
     <version.com.networknt>1.5.9</version.com.networknt>
     <version.commons.lang>3.20.0</version.commons.lang>
@@ -202,9 +201,9 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>${version.ch.qos.logback}</version>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${version.org.slf4j}</version>
         <scope>test</scope>
       </dependency>
       <dependency>

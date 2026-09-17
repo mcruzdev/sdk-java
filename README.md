@@ -85,6 +85,15 @@ b) Add the following dependencies to your pom.xml `dependencies` section:
     <version>4.1.0.Final</version>
 </dependency>
 
+<!-- serverlessworkflow-diagram uses PlantUML to render diagrams, but does not
+     ship it: PlantUML is GPL-3.0-licensed and this project is Apache-2.0.
+     Add it yourself to use WorkflowDiagram. -->
+<dependency>
+    <groupId>net.sourceforge.plantuml</groupId>
+    <artifactId>plantuml</artifactId>
+    <version>8059</version>
+</dependency>
+
 <dependency>
     <groupId>io.serverlessworkflow</groupId>
     <artifactId>serverlessworkflow-util</artifactId>

@@ -33,9 +33,13 @@
             <groupId>org.thymeleaf</groupId>
             <artifactId>thymeleaf</artifactId>
         </dependency>
+        <!-- PlantUML is GPL-3.0-licensed; kept optional so it is not pulled in
+             transitively by consumers of this Apache-2.0 module. Anyone using
+             WorkflowDiagram must add this dependency themselves. -->
         <dependency>
             <groupId>net.sourceforge.plantuml</groupId>
             <artifactId>plantuml</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>guru.nidi</groupId>
@@ -64,8 +68,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
