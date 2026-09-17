@@ -17,12 +17,6 @@ package io.serverlessworkflow.diagram;
 
 import io.serverlessworkflow.api.Workflow;
 import io.serverlessworkflow.api.interfaces.WorkflowDiagram;
-import io.serverlessworkflow.diagram.utils.WorkflowToPlantuml;
-import java.io.ByteArrayOutputStream;
-import java.nio.charset.Charset;
-import net.sourceforge.plantuml.FileFormat;
-import net.sourceforge.plantuml.FileFormatOption;
-import net.sourceforge.plantuml.SourceStringReader;
 
 public class WorkflowDiagramImpl implements WorkflowDiagram {
 
@@ -59,15 +53,9 @@ public class WorkflowDiagramImpl implements WorkflowDiagram {
 
   @Override
   public String getSvgDiagram() throws Exception {
-    if (workflow == null) {
-      throw new IllegalAccessException("Unable to get diagram - no workflow set.");
-    }
-    String diagramSource = WorkflowToPlantuml.convert(template, workflow, showLegend);
-    SourceStringReader reader = new SourceStringReader(diagramSource);
-    final ByteArrayOutputStream os = new ByteArrayOutputStream();
-    reader.generateImage(os, new FileFormatOption(FileFormat.SVG));
-    os.close();
-    return new String(os.toByteArray(), Charset.forName("UTF-8"));
+    // TEMPORARY: PlantUML dependency removed to isolate a FOSSA CI check. Revert before merging.
+    throw new UnsupportedOperationException(
+        "PlantUML dependency temporarily removed for CI diagnostic.");
   }
 
   @Override
