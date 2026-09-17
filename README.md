@@ -10,11 +10,14 @@ With the SDK you can:
 * Parse workflow JSON and YAML definitions
 * Programmatically build workflow definitions
 * Validate workflow definitions (both schema and workflow integrity validation)
-* Generate workflow diagram (SVG)
 * Set of utilities to help runtimes interpret the Serverless Workflow object model
 
 Serverless Workflow Java SDK is **not** a workflow runtime implementation but can be used by Java runtime implementations
-to parse and validate workflow definitions as well as generate the workflow diagram (SVG).
+to parse and validate workflow definitions.
+
+> **Note:** The `serverlessworkflow-diagram` module (workflow-to-SVG diagram generation) has been removed. It depended
+> on [PlantUML](https://plantuml.com/), which is GPL-3.0-licensed and incompatible with distributing this project's
+> Apache-2.0-licensed artifacts.
 
 ### Status
 
@@ -81,21 +84,6 @@ b) Add the following dependencies to your pom.xml `dependencies` section:
 
 <dependency>
     <groupId>io.serverlessworkflow</groupId>
-    <artifactId>serverlessworkflow-diagram</artifactId>
-    <version>4.1.0.Final</version>
-</dependency>
-
-<!-- serverlessworkflow-diagram uses PlantUML to render diagrams, but does not
-     ship it: PlantUML is GPL-3.0-licensed and this project is Apache-2.0.
-     Add it yourself to use WorkflowDiagram. -->
-<dependency>
-    <groupId>net.sourceforge.plantuml</groupId>
-    <artifactId>plantuml</artifactId>
-    <version>8059</version>
-</dependency>
-
-<dependency>
-    <groupId>io.serverlessworkflow</groupId>
     <artifactId>serverlessworkflow-util</artifactId>
     <version>4.1.0.Final</version>
 </dependency>
@@ -115,7 +103,6 @@ b) Add the following dependencies to your build.gradle `dependencies` section:
 implementation("io.serverlessworkflow:serverlessworkflow-api:4.1.0.Final")
 implementation("io.serverlessworkflow:serverlessworkflow-spi:4.1.0.Final")
 implementation("io.serverlessworkflow:serverlessworkflow-validation:4.1.0.Final")
-implementation("io.serverlessworkflow:serverlessworkflow-diagram:4.1.0.Final")
 implementation("io.serverlessworkflow:serverlessworkflow-util:4.1.0.Final")
 ```
 
@@ -255,67 +242,6 @@ Workflow workflow = new Workflow()
 WorkflowValidator workflowValidator = new WorkflowValidatorImpl();
 List<ValidationError> validationErrors = workflowValidator.setWorkflow(workflow).validate();
 ```
-
-#### Building Workflow Diagram
-
-Given a valid workflow definition (JSON/YAML) or a Workflow object you can build the workflow diagram SVG.
-The generated diagram SVG uses [PlantUML](https://plantuml.com/) state diagram visualization and can be embedded inside your 
-tooling or web pages, or any SVG viewer.
-
-You can build the workflow diagram SVG with the following code:
-
-``` java
-Workflow workflow = Workflow.fromSource(source);
-
-WorkflowDiagram workflowDiagram = new WorkflowDiagramImpl();
-workflowDiagram.setWorkflow(workflow);
-
-String diagramSVG = workflowDiagram.getSvgDiagram();
-```
-
-`diagramSVG` includes the diagram SVG source which you can then decide to save to a file, 
-print, or process further.
-
-In case default visualization of the workflow is not sufficient you can provide custom workflow template to be 
-used while generating the SVG file. Easiest is to start off from the default template and customize it to your needs.
-
-Custom template must be on the classpath in `templates/plantuml` directory and must use `.txt` extension. Next
-template is set on `WorkflowDiagram` instance as shown below.
-
-``` java
-Workflow workflow = Workflow.fromSource(source);
-
-WorkflowDiagram workflowDiagram = new WorkflowDiagramImpl();
-workflowDiagram.setWorkflow(workflow);
-workflowDiagram.setTemplate("custom-template");
-
-String diagramSVG = workflowDiagram.getSvgDiagram();
-```
-
-By default the diagram legend is now shown. If you want to enable it you can do:
-
-``` java
-Workflow workflow = Workflow.fromSource(source);
-
-WorkflowDiagram workflowDiagram = new WorkflowDiagramImpl();
-workflowDiagram.setWorkflow(workflow)
-               .showLegend(true);
-
-String diagramSVG = workflowDiagram.getSvgDiagram();
-```
-
-Here are some generated diagrams from the specification examples (with legend enabled):
-
-1. [Job Monitoring Example](https://github.com/serverlessworkflow/specification/blob/master/examples/examples.md#Monitor-Job-Example)
-<p align="center">
-<img src="img/jobmonitoring.png" alt="Job Monitoring Example Diagram"/>
-</p>
-
-
-2. [Send CloudEvent on Workflow completion Example](https://github.com/serverlessworkflow/specification/blob/master/examples/examples.md#send-cloudevent-on-workfow-completion-example)
-<p align="center">
-<img src="img/provisionorders.png" alt="Send Cloud Event on Workflow completion"/>
-</p>
 
 #### Using Workflow Utils
 Workflow utils provide a number of useful methods for extracting information from workflow definitions.
